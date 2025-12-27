@@ -1,11 +1,10 @@
 import express from "express";
 import { sendNotification } from "../controllers/admin/notification.js";
 import { addBanner } from "../controllers/admin/bannerController.js";
-import { appversion } from "../controllers/admin/appVersionRoute.js";
-import { addCity } from "../controllers/admin/CityController.js";
+ import { addCity } from "../controllers/admin/CityController.js";
 import { addVehicle } from "../controllers/admin/Add_Vehicle_Controller.js";
 import { createServiceOwner } from "../controllers/admin/Service_Owner_Register_Controller.js";
-
+import { appversion } from "../controllers/admin/ServicesappVersionRoute.js";
 const adminroute = express.Router();
 
 

@@ -19,7 +19,6 @@ const saveFcmToken = async (req, res) => {
     }
 
     user.fcmtoken = fcmtoken;
-    user.lastFcmUpdate = new Date();
     await user.save();
 
     return res.status(200).json({ status: "success" });

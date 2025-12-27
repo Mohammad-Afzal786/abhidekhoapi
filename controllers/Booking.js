@@ -100,10 +100,7 @@ if (vehicle && vehicle.serviceOwnerId) {
     serviceOwnerId: vehicle.serviceOwnerId,
     title: "New Booking Received 🚍",
     body: `Route: ${from} → ${to}\nDate: ${dateOfJourney}\nSeats: ${passengers.length}`,
-    data: {
-      bookingId: booking.bookingId,
-      vehicleId: vehicleId,
-    },
+    
   });
 }
 

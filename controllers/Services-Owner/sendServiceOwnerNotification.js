@@ -2,54 +2,67 @@ import admin from "firebase-admin";
 import path from "path";
 import { readFileSync } from "node:fs";
 import Service_Owner_Model from "../../models/service_owner_models/Service_Owner_Model.js";
+import ServiceOwnerNotification from "../../models/service_owner_models/ServiceOwnerNotification.js";
 
-// ✅ Firebase Service Account
+
+// Firebase init (same as before)
 const serviceAccountPath = path.resolve("./config/serviceAccountKey.json");
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
 
-// ✅ Init Firebase
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
 }
 
-/**
- * Send notification to SINGLE ServiceOwner
- */
 const sendServiceOwnerNotification = async ({
   serviceOwnerId,
   title,
   body,
-  image = "",
-  data = {},
+   
 }) => {
   try {
-    // 🔹 Find service owner
+    // 🔹 Save notification in DB (user jaisa hi)
+    await ServiceOwnerNotification.findOneAndUpdate(
+      { serviceOwnerId },
+      {
+        $push: {
+          notifications: {
+            title,
+            message: body,
+            
+          },
+        },
+      },
+      { upsert: true, new: true }
+    );
+
+    // 🔹 Find owner for FCM
     const owner = await Service_Owner_Model.findOne({ serviceOwnerId });
 
     if (!owner || !owner.fcmtoken) {
-      console.log("❌ ServiceOwner or FCM token not found");
+      console.log("⚠️ FCM token not found, saved in DB only");
       return;
     }
 
+    // 🔹 Send FCM
     const message = {
       token: owner.fcmtoken.trim(),
       notification: {
         title,
         body,
-        image,
+         
       },
       data: {
         click_action: "FLUTTER_NOTIFICATION_CLICK",
         screen: "owner_booking",
-        ...data,
+         
       },
     };
 
-    const response = await admin.messaging().send(message);
+    await admin.messaging().send(message);
 
-    console.log("✅ Notification sent to ServiceOwner:", response);
+    console.log("✅ ServiceOwner notification sent & saved");
   } catch (error) {
     console.error("❌ ServiceOwner notification error:", error.message);
   }
