@@ -1,5 +1,6 @@
 import Booking from "../models/Booking_model.js";
 import Vehicle from "../models/VehicleModel.js";
+import Service_Owner_Model from "../models/service_owner_models/Service_Owner_Model.js";
 
 const getBookingsByUserId = async (req, res) => {
   try {
@@ -33,6 +34,10 @@ const getBookingsByUserId = async (req, res) => {
 
       if (!vehicle) continue;
 
+      // 🔹 Service Owner (Driver)
+      const owner = await Service_Owner_Model.findOne({
+        serviceOwnerId: vehicle.serviceOwnerId,
+      }).lean();
       results.push({
         bookingId: booking.bookingId,
         status: booking.status,
@@ -52,9 +57,10 @@ const getBookingsByUserId = async (req, res) => {
         date: vehicle.date,
         travlername: vehicle.travlername,
 
-        // Vehicle Info
-        driverName: "Ankit Sharma",
-        driverNumber: "9876543210",
+        
+        // 👨‍✈️ Driver / Owner Info (FROM ServiceOwner)
+        driverName: owner?.name || "N/A",
+        driverNumber: owner?.phone || "N/A",
         vehicleName: vehicle?.vehicleName || "N/A",
         vehicleNumber: vehicle?.vehicleNumber || "N/A",
         vehicleType: vehicle?.vehicle || "N/A",
