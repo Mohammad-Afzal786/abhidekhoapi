@@ -2,7 +2,7 @@
 const Userappversion = async (req, res) => {
   try {
     const appInfo = {
-      latestVersion: "1.0.0", // 👈 current latest version
+      latestVersion: "1.0.2", // 👈 current latest version
       apkUrl: "https://abhidekho.online/userapi/download-apk", // 👈 direct APK download link
       changelog: "🚀 New UI, bug fixes, and performance improvements.",
       forceUpdate: false, // 👈 true = user cannot skip update
