@@ -8,7 +8,7 @@ const vehicleSchema = new mongoose.Schema(
       type: String
     },
     vehicleName: { type: String, required: true, trim: true },
-    vehicleNumber: { type: String, required: true, unique: true, trim: true },
+    vehicleNumber: { type: String, required: true,  trim: true },
 
     vehicle: {
       type: String,
@@ -43,6 +43,12 @@ const vehicleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+/// ✅ COMPOUND UNIQUE INDEX (REAL FIX)
+vehicleSchema.index(
+  { vehicleNumber: 1, from: 1, to: 1 },
+  { unique: true }
+);
 // 🔹 Pre-save hook — auto-generate vehicleId
 vehicleSchema.pre("save", async function (next) {
   if (!this.isNew || this.vehicleId) return next();

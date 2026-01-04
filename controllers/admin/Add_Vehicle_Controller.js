@@ -20,12 +20,12 @@ function calculateDuration(start, end) {
 
 const addVehicle = async (req, res) => {
   try {
-    const { 
+    const {
       serviceOwnerId,
-      vehicleName, 
-      vehicleNumber, 
-      vehicle, 
-      seats, 
+      vehicleName,
+      vehicleNumber,
+      vehicle,
+      seats,
       acType,
       travlername,
 
@@ -35,13 +35,13 @@ const addVehicle = async (req, res) => {
       start,
       end,
       price,
-      
+
     } = req.body;
 
     // 1️⃣ Required fields check
     if (
       !serviceOwnerId || !vehicleName || !vehicleNumber || !vehicle || !seats ||
-      !from || !to || !start || !end || !price 
+      !from || !to || !start || !end || !price
     ) {
       return res.status(400).json({
         success: false,
@@ -59,7 +59,11 @@ const addVehicle = async (req, res) => {
     }
 
     // 3️⃣ Check duplicate vehicle number
-    const existing = await Vehicle.findOne({ vehicleNumber });
+    const existing = await Vehicle.findOne({
+      vehicleNumber,
+      from,
+      to,
+    });
     if (existing) {
       return res.status(400).json({
         success: false,
@@ -85,7 +89,7 @@ const addVehicle = async (req, res) => {
       end,
       duration,
       price,
-      
+
     });
 
     await newVehicle.save();
